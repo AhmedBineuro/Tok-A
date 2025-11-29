@@ -189,11 +189,12 @@ inline void Parse(ParserContext *ctx, char *src)
         char c = fgetc(file);
         while (c != EOF)
         {
+            ctx->cursorOffset = ftell(file);
             for (int i = 0; i < ctx->rules.size; i++)
             {
                 if (ctx->rules.arr[i].condition(c))
                 {
-                    long cursorPos = ftell(file);
+                    long cursorPos = ctx->cursorOffset;
                     ctx->rules.arr[i].func.fileFunction(ctx, c, file);
                     if (ctx->cursorOffset != cursorPos)
                     {
@@ -225,8 +226,6 @@ inline void Parse(ParserContext *ctx, char *src)
             }
         }
     }
-    ctx->lineNumber = 1;
-    ctx->charNumber = 1;
 }
 
 inline void ResetContext(bool resetRules, ParserContext *ctx)
