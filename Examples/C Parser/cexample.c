@@ -20,7 +20,7 @@ int main()
     pf.fileFunction = ConsumeWhiteSpace_F;
     AddParseRule(&ctx, "White space muncher", IsWhiteSpace, pf);
 
-    Parse(&ctx, "C:\\Users\\purea\\Documents\\Git_Projects\\PtahLib\\Tokenizer\\test.c");
+    Parse(&ctx, "test.c");
     for (int i = 0; i < ctx.tokens.size; i++)
     {
         printf("[%ld,%ld]: %s: %s\n", ctx.tokens.arr[i].line, ctx.tokens.arr[i].at, ctx.tokens.arr[i].type, ctx.tokens.arr[i].value.arr);
