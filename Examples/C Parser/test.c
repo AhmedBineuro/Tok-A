@@ -1,6 +1,8 @@
 /**
  * This is for parser example and not to be compiled
  */
+
+// Another comment style
 #include "test.h"
 
 int main()
@@ -11,5 +13,8 @@ int main()
     int xI = 5;
     int yI = 5.0;
     char *str = "String 1";
+    printf("Statement to print"); // Comment to be ignored
+    bool y = false;               /*
+                  Another ingnored awkward comment*/
     return 0;
 }
