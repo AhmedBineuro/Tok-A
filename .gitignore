@@ -1,5 +1,3 @@
-*.exe
 .vscode/**
-
 Examples/C\ Parser/.vscode/**
 Rules.h

@@ -1,7 +1,13 @@
 #include "./CRules.h"
 
-int main()
+int main(int argc, char **argv)
 {
+    if (argc == 1)
+    {
+        printf("To tokenize files add the paths of the files as arguments to this executable!\n");
+        return 0;
+    }
+
     ParserContext ctx = CreateParserContext(true);
     /*
     Parsing function is a union that can either
@@ -28,10 +34,15 @@ int main()
     pf.fileFunction = ConsumeWhiteSpace_F;
     AddParseRule(&ctx, "White space muncher", IsWhiteSpace, pf);
 
-    Parse(&ctx, "./test.c");
-    for (int i = 0; i < ctx.tokens.size; i++)
+    for (int i = 1; i < argc; i++)
     {
-        printf("[%ld,%ld]: %s: %s\n", ctx.tokens.arr[i].line, ctx.tokens.arr[i].at, ctx.tokens.arr[i].type, ctx.tokens.arr[i].value.arr);
+        printf("================File %d: %s================\n", i - 1, argv[i]);
+        Parse(&ctx, argv[i]);
+        for (int i = 0; i < ctx.tokens.size; i++)
+        {
+            printf("[%ld,%ld]: %s: %s\n", ctx.tokens.arr[i].line, ctx.tokens.arr[i].at, ctx.tokens.arr[i].type, ctx.tokens.arr[i].value.arr);
+        }
+        ResetContext(false, &ctx);
     }
     FreeParserContext(&ctx);
 }
