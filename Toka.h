@@ -47,6 +47,15 @@
         }                                                                          \
     }
 
+#define SHRINK_ARRAY(TYPE, ARRAY)                                              \
+    {                                                                          \
+        if (ARRAY.size != 0 && (ARRAY.size != ARRAY.capacity))                 \
+        {                                                                      \
+            ARRAY.arr = (TYPE *)realloc(ARRAY.arr, sizeof(TYPE) * ARRAY.size); \
+            ARRAY.capacity = ARRAY.size;                                       \
+        }                                                                      \
+    }
+
 #define APPEND_TO_ARRAY(TYPE, ARRAY, VALUE)                          \
     {                                                                \
         if ((ARRAY.capacity == 0) || (ARRAY.size == ARRAY.capacity)) \

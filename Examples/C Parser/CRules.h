@@ -359,6 +359,7 @@ inline void ConsumeSingleCharToken_F(ParserContext *ctx, char c, FILE *file)
     }
     ctx->charNumber++;
     ctx->cursorOffset++;
+    SHRINK_ARRAY(char, t.value)
     APPEND_TO_ARRAY(Token, ctx->tokens, t)
 }
 void ConsumeString_F(ParserContext *ctx, char c, FILE *file)
@@ -401,7 +402,8 @@ void ConsumeString_F(ParserContext *ctx, char c, FILE *file)
     else
     {
         APPEND_TO_ARRAY(char, t.value, '\0')
-        APPEND_TO_ARRAY(Token, ctx->tokens, t);
+        SHRINK_ARRAY(char, t.value)
+        APPEND_TO_ARRAY(Token, ctx->tokens, t)
     };
 }
 void ConsumeIdentifier_F(ParserContext *ctx, char c, FILE *file)
@@ -439,6 +441,7 @@ void ConsumeIdentifier_F(ParserContext *ctx, char c, FILE *file)
     {
         APPEND_TO_ARRAY(char, t.value, '\0')
         KeywordFilter(&t);
+        SHRINK_ARRAY(char, t.value)
         APPEND_TO_ARRAY(Token, ctx->tokens, t);
     };
 }
@@ -499,6 +502,7 @@ inline void ConsumeNumber_F(ParserContext *ctx, char c, FILE *file)
     else
     {
         APPEND_TO_ARRAY(char, t.value, '\0')
+        SHRINK_ARRAY(char, t.value)
         APPEND_TO_ARRAY(Token, ctx->tokens, t);
     };
 }

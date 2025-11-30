@@ -2,7 +2,7 @@
 
 ## What is Tok-A
 
-Tok-A is the more flexible more hands on version of my previous tokenizer **[Toke](https://github.com/AhmedBineuro/Toke)**. Tok-A provides a super basic parsing system and interface used to tokenize any file, any way you like it!
+Tok-A is the more flexible general purpose parsing engine. It can be seen as the more hands on version of my previous tokenizer **[Toke](https://github.com/AhmedBineuro/Toke)**. Tok-A provides a super basic parsing system and interface used to tokenize any file, any way you like it!
 
 ## What can you do with *Tok-A*
 
@@ -15,4 +15,4 @@ On the other hand, if you want to have total control over the parsing priorities
 
 ## Documentation
 
-The engine documentation is being worked on right now and will be out shortly! Additionally plans to produce tutorials for it are being considered.
+A rudementary version can be found [here](./ThingsToLearn.md)
