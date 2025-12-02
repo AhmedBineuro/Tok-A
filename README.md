@@ -15,4 +15,4 @@ On the other hand, if you want to have total control over the parsing priorities
 
 ## Documentation
 
-A rudementary version can be found [here](./ThingsToLearn.md)
+A rudementary version can be found [here](./ThingsToLearn.md).

@@ -5,9 +5,11 @@
 /**
  * @brief This is a functional example of how to use Toke.
  * In this example, we will be parsing a c file down to its tokens
- * The example will contain redundant code for demonstration
+ * The example will contain redundant code for demonstration. Since it is just
+ * an example, I did not implement the full specs and features
+ *  of a modern c parser
  */
-#define SINGLE_CHAR_TOKEN_COUNT 23
+#define SINGLE_CHAR_TOKEN_COUNT 25
 #define KEYWORD_TOKEN_COUNT 37
 static char SingleCharTokens[SINGLE_CHAR_TOKEN_COUNT] = {
     '~',
@@ -32,7 +34,9 @@ static char SingleCharTokens[SINGLE_CHAR_TOKEN_COUNT] = {
     '.',
     ',',
     '&',
-    '#'};
+    '#',
+    '{',
+    '}'};
 static char *SingleCharTokenNames[SINGLE_CHAR_TOKEN_COUNT] = {
     "TILDA",
     "DBL_QUOTE",
@@ -56,7 +60,9 @@ static char *SingleCharTokenNames[SINGLE_CHAR_TOKEN_COUNT] = {
     "PERIOD",
     "COMMA",
     "AMPERSAND",
-    "HASHTAG"};
+    "HASHTAG",
+    "L_SQUIGGLYBRACK",
+    "R_SQUIGGLYBRACK"};
 static const char *Keywords[KEYWORD_TOKEN_COUNT] = {
     "void",
     "char",
@@ -88,11 +94,11 @@ static const char *Keywords[KEYWORD_TOKEN_COUNT] = {
     "enum",
     "sizeof",
     "bool",
-    "malloc",
-    "calloc",
-    "realloc",
-    "free",
-    "printf",
+    "malloc",  // Function included just for demonstration
+    "calloc",  // Function included just for demonstration
+    "realloc", // Function included just for demonstration
+    "free",    // Function included just for demonstration
+    "printf",  // Function included just for demonstration
     "true",
     "false"};
 static const char *KeywordNames[KEYWORD_TOKEN_COUNT] = {
