@@ -2,11 +2,8 @@
 
 int main(int argc, char **argv)
 {
-    if (argc == 1)
-    {
-        printf("To tokenize files add the paths of the files as arguments to this executable!\n");
-        return 0;
-    }
+
+    printf("To tokenize files add the paths of the files as arguments to this executable!\n");
 
     ParserContext ctx = CreateParserContext(true);
     /*
@@ -22,27 +19,40 @@ int main(int argc, char **argv)
     pf.fileFunction = ConsumeComment_F;
     AddParseRule(&ctx, "String", IsCommentStart, pf);
 
+    pf.fileFunction = ConsumeChar_F;
+    AddParseRule(&ctx, "Char", IsCharStart, pf);
     pf.fileFunction = ConsumeNumber_F;
     AddParseRule(&ctx, "Number", IsNumeric, pf);
 
     pf.fileFunction = ConsumeIdentifier_F;
     AddParseRule(&ctx, "Identifier", IsIdentiferStart, pf);
-
     pf.fileFunction = ConsumeSingleCharToken_F;
     AddParseRule(&ctx, "Single Character token", IsSingleCharToken, pf);
 
     pf.fileFunction = ConsumeWhiteSpace_F;
     AddParseRule(&ctx, "White space muncher", IsWhiteSpace, pf);
 
-    for (int i = 1; i < argc; i++)
+    if (argc == 1)
     {
-        printf("================File %d: %s================\n", i - 1, argv[i]);
-        Parse(&ctx, argv[i]);
+        Parse(&ctx, "test.c");
         for (int i = 0; i < ctx.tokens.size; i++)
         {
             printf("[%ld,%ld]: %s: %s\n", ctx.tokens.arr[i].line, ctx.tokens.arr[i].at, ctx.tokens.arr[i].type, ctx.tokens.arr[i].value.arr);
         }
-        ResetContext(false, &ctx);
+    }
+    else
+    {
+
+        for (int i = 1; i < argc; i++)
+        {
+            printf("================File %d: %s================\n", i - 1, argv[i]);
+            Parse(&ctx, argv[i]);
+            for (int i = 0; i < ctx.tokens.size; i++)
+            {
+                printf("[%ld,%ld]: %s: %s\n", ctx.tokens.arr[i].line, ctx.tokens.arr[i].at, ctx.tokens.arr[i].type, ctx.tokens.arr[i].value.arr);
+            }
+            ResetContext(false, &ctx);
+        }
     }
     FreeParserContext(&ctx);
 }

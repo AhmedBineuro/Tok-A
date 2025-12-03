@@ -165,9 +165,10 @@ enum TokenTypes
     AMPERSAND,
     HASHTAG,
     STRING_LITERAL,
+    CHAR_LITERAL,
     INTEGER,
     FLOAT,
-    IDENTIFIER,
+    IDENTIFIER
 };
 // Parsing condition functions
 bool IsAlphaNumeric(char c);
@@ -177,6 +178,7 @@ bool IsWhiteSpace(char c);
 bool IsNewLine(char c);
 bool IsCommentStart(char c);
 bool IsStringStart(char c);
+bool IsCharStart(char c);
 bool IsIdentiferStart(char c);
 bool IsSingleCharToken(char c);
 
@@ -196,6 +198,7 @@ void ConsumeWhiteSpace_F(ParserContext *ctx, char c, FILE *file);
 void ConsumeComment_F(ParserContext *ctx, char c, FILE *file);
 void ConsumeSingleCharToken_F(ParserContext *ctx, char c, FILE *file);
 void ConsumeString_F(ParserContext *ctx, char c, FILE *file);
+void ConsumeChar_F(ParserContext *ctx, char c, FILE *file);
 void ConsumeIdentifier_F(ParserContext *ctx, char c, FILE *file);
 void ConsumeNumber_F(ParserContext *ctx, char c, FILE *file);
 
@@ -214,6 +217,10 @@ inline bool IsNumeric(char c)
 inline bool IsStringStart(char c)
 {
     return (c == '\"');
+}
+inline bool IsCharStart(char c)
+{
+    return (c == '\'');
 }
 inline bool IsIdentiferStart(char c)
 {
@@ -371,29 +378,78 @@ inline void ConsumeSingleCharToken_F(ParserContext *ctx, char c, FILE *file)
 void ConsumeString_F(ParserContext *ctx, char c, FILE *file)
 {
     Token t;
-    if (c != '\"')
-        return;
     t.line = ctx->lineNumber;
     t.at = ctx->charNumber;
     INIT_ARRAY(char, t.value, 0);
     long at = ctx->charNumber;
     long cursorPos = ctx->cursorOffset;
-    bool firstQuote = true;
-    while ((c != EOF) && (c != '\n'))
+    APPEND_TO_ARRAY(char, t.value, c)
+    cursorPos += 1;
+    at += 1;
+    c = fgetc(file);
+    bool escape = false;
+    while ((c != EOF) && (c != '\n') && (!escape))
     {
         APPEND_TO_ARRAY(char, t.value, c)
         if (c == '\"')
         {
-            if (!firstQuote)
-            {
-                cursorPos += 1;
-                ctx->cursorOffset = cursorPos;
-                ctx->charNumber = at;
-                SET_TOKEN_ENUM_TYPE(t, STRING_LITERAL)
-                break;
-            }
-            else
-                firstQuote = false;
+            ctx->cursorOffset = cursorPos;
+            ctx->charNumber = at;
+            SET_TOKEN_ENUM_TYPE(t, STRING_LITERAL)
+            break;
+        }
+        else if ((c == '\\') && (!escape))
+            escape = true;
+        else
+            escape = false;
+        at++;
+        cursorPos++;
+        c = fgetc(file);
+    }
+    // Failed parse (Free string)
+    if (ctx->cursorOffset != cursorPos)
+    {
+        FREE_ARRAY(t.value);
+        fseek(file, ctx->cursorOffset, SEEK_SET);
+    }
+    else
+    {
+        APPEND_TO_ARRAY(char, t.value, '\0')
+        SHRINK_ARRAY(char, t.value)
+        APPEND_TO_ARRAY(Token, ctx->tokens, t)
+    };
+}
+void ConsumeChar_F(ParserContext *ctx, char c, FILE *file)
+{
+    Token t;
+    t.line = ctx->lineNumber;
+    t.at = ctx->charNumber;
+    INIT_ARRAY(char, t.value, 0);
+    long at = ctx->charNumber;
+    long cursorPos = ctx->cursorOffset;
+    bool escape = false, charFound = false;
+    APPEND_TO_ARRAY(char, t.value, c);
+    cursorPos += 1;
+    at++;
+    c = fgetc(file);
+    while ((c != EOF) && (c != '\n'))
+    {
+        APPEND_TO_ARRAY(char, t.value, c)
+        if ((c == '\'') && (!escape))
+        {
+            ctx->cursorOffset = cursorPos;
+            ctx->charNumber = at;
+            SET_TOKEN_ENUM_TYPE(t, CHAR_LITERAL)
+            break;
+        }
+        else if (c == '\\' && (!escape))
+            escape = true;
+        else if ((c != '\'') && (charFound) && (!escape))
+            break;
+        else
+        {
+            escape = false;
+            charFound = true;
         }
         at++;
         cursorPos++;
